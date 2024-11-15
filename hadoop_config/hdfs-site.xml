@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!-- Put site-specific property overrides in this file. -->
+<configuration>
+        <property>
+		<name>dfs.permissions</name>
+		<value>false</value>
+	</property>
+        <property>
+                <name>dfs.replication</name>
+                <value>1</value>
+        </property>
+                                <property>
+                <name>dfs.namenode.name.dir</name>
+                <value>file:///hadoop/data/01/hdfs/namenode</value>
+        </property>
+        <property>
+                <name>dfs.datanode.data.dir</name>
+                <value>file:///hadoop/data/01/hdfs/datanode</value>
+        </property>
+        <property>
+		<name>dfs.webhdfs.enabled</name>
+		<value>true</value>
+	</property>
+        <property>
+		<name>dfs.namenode.http-address</name>
+		<value>master-node:50070</value>
+	</property>
+    <property>
+		<name>dfs.namenode.secondary.http-address</name>
+		<value>master-node:50090</value>
+	</property>
+</configuration>

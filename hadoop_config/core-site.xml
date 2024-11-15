@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!-- Put site-specific property overrides in this file. -->
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://master-node:8020</value>
+  </property>
+    <property>
+    <name>fs.default.name</name>
+    <value>hdfs://master-node:8020</value>
+  </property>
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>/hadoop/data/01/tmp</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.username.groups</name>
+    <value>*</value>    
+  </property>
+  <property>
+    <name>hadoop.proxyuser.username.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+      <name>hadoop.proxyuser.hadoop.groups</name>
+      <value>*</value>    
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hadoop.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+      <name>hadoop.proxyuser.hbase.groups</name>
+      <value>*</value>
+  </property>
+  <property>
+      <name>hadoop.proxyuser.hbase.hosts</name>
+      <value>*</value>
+  </property>
+    <property>
+      <name>hadoop.proxyuser.HTTP.groups</name>
+      <value>*</value>
+  </property>
+    <property>
+      <name>hadoop.proxyuser.HTTP.hosts</name>
+      <value>*</value>
+  </property>
+    <property>
+      <name>hadoop.proxyuser.hive.groups</name>
+      <value>*</value>
+  </property>
+  <property>
+      <name>hadoop.proxyuser.hive.hosts</name>
+      <value>*</value>
+  </property>
+</configuration>
