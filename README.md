@@ -24,4 +24,10 @@ Docker for standalone and pseudo-distributed mode
 
 `hdfs dfs -mkdir -p /user/root`
 
+`start-master.sh` 
+
+`sleep 5`
+
+`start-worker.sh spark://$(hostname):7077`
+
 

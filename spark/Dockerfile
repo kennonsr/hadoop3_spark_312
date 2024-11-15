@@ -6,8 +6,8 @@ USER root
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive add-apt-repository --yes ppa:deadsnakes/ppa && \
-    apt-get install -y python3.11 python3.11-distutils
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
+    apt-get install -y python3.10 python3.10-distutils
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
 
 ENV SCALA_VERSION 2.12.12
 ENV SPARK_VERSION 3.1.2
@@ -46,11 +46,11 @@ ENV LD_LIBRARY_PATH /usr/local/hadoop/hadoop/share/hadoop/common/lib:$LD_LIBRARY
 RUN mv /usr/local/hadoop/spark/conf/spark-env.sh.template /usr/local/hadoop/spark/conf/spark-env.sh && \
     echo "export SPARK_DIST_CLASSPATH=$(hadoop classpath)" >> /usr/local/hadoop/spark/conf/spark-env.sh && \
     echo "export SPARK_LOG_DIR=/usr/local/hadoop/spark/logs" >> /usr/local/hadoop/spark/conf/spark-env.sh && \
-    echo "export PYSPARK_PYTHON=python3.11" >> /usr/local/hadoop/spark/conf/spark-env.sh && \
+    echo "export PYSPARK_PYTHON=python3.10" >> /usr/local/hadoop/spark/conf/spark-env.sh && \
     mv /usr/local/hadoop/spark/conf/spark-defaults.conf.template /usr/local/hadoop/spark/conf/spark-defaults.conf && \
     echo "spark.eventLog.dir file:/usr/local/hadoop/spark/logs" >> /usr/local/hadoop/spark/conf/spark-defaults.conf && \
     echo "spark.history.fs.logDirectory file:/usr/local/hadoop/spark/logs" >> /usr/local/hadoop/spark/conf/spark-defaults.conf && \
-    echo "spark.master spark://localhost:7077" >> /usr/local/hadoop/spark/conf/spark-defaults.conf && \
+    echo "spark.master spark://master-node:7077" >> /usr/local/hadoop/spark/conf/spark-defaults.conf && \
     echo "spark.sql.catalogImplementation hive" >> /usr/local/hadoop/spark/conf/spark-defaults.conf && \
     echo "spark.yarn.jars hdfs://master-node:9000/spark-jars/*" >> /usr/local/hadoop/spark/conf/spark-defaults.conf
     #RUN echo "spark.sql.hive.metastore.version 2.3.0" >> /usr/local/hadoop/spark/conf/spark-defaults.conf && \
@@ -71,8 +71,8 @@ RUN chown hadoop -R /usr/local/hadoop/spark
 ENV SPARK_MASTER_PORT=7077 \
 SPARK_MASTER_WEBUI_PORT=8080 \
 SPARK_WORKER_WEBUI_PORT=8080 \
-SPARK_WORKER_PORT=7000 
-# SPARK_WORKLOAD="master"
+SPARK_WORKER_PORT=7000 \
+SPARK_WORKLOAD="master"
 
 EXPOSE 8080 7077 9000 6066 4040 18080 8042
 
