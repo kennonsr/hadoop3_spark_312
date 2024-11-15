@@ -74,7 +74,32 @@ SPARK_WORKER_WEBUI_PORT=8080 \
 SPARK_WORKER_PORT=7000 \
 SPARK_WORKLOAD="master"
 
-EXPOSE 8080 7077 9000 6066 4040 18080 8042
+# Hive 2.3.9 Intallation
+
+ENV HIVE_VERSION 2.3.9
+
+# get sources
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libpostgresql-jdbc-java && \
+    wget https://archive.apache.org/dist/hive/hive-$HIVE_VERSION/apache-hive-$HIVE_VERSION-bin.tar.gz -P /usr/local/hadoop/
+RUN tar -xzf /usr/local/hadoop/apache-hive-$HIVE_VERSION-bin.tar.gz -C /usr/local/hadoop/
+RUN mv /usr/local/hadoop/apache-hive-$HIVE_VERSION-bin /usr/local/hadoop/hive
+RUN rm -rf /usr/local/hadoop/apache-hive-$HIVE_VERSION*
+
+# set environment variables
+ENV HIVE_HOME /usr/local/hadoop/hive
+ENV PATH $HIVE_HOME/bin:$PATH
+
+RUN cp /usr/share/java/postgresql-jdbc4.jar /usr/local/hadoop/hive/lib/
+ADD hadoop_config/hive-site.xml $HIVE_HOME/conf/hive-site.xml
+RUN echo "export HADOOP_HOME=/usr/local/hadoop" >> /usr/local/hadoop/hive/bin/hive-config.sh
+RUN mkdir -p $HIVE_HOME/hcatalog/var/log
+RUN mkdir -p $HIVE_HOME/var/log
+RUN chown hadoop -R /usr/local/hadoop/hive
+RUN export LANGUAGE=en_US.UTF-8
+ENV HIVE_CONF_DIR $HIVE_HOME/conf
+
+EXPOSE 8080 7077 9000 6066 4040 18080 8042 10000
 
 COPY hadoop_config/spark-entrypoint.sh /usr/local/bin/spark-entrypoint.sh
 

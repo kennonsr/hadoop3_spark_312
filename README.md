@@ -24,10 +24,24 @@ Docker for standalone and pseudo-distributed mode
 
 `hdfs dfs -mkdir -p /user/root`
 
-`start-master.sh` 
+`start-all.sh` 
 
 `sleep 5`
 
-`start-worker.sh spark://$(hostname):7077`
 
+`schematool -initSchema -dbType derby`
 
+`hive --service metastore`
+
+`hiveserver2`
+
+`beeline -u jdbc:hive2://master-node:10000`
+
+hdfs namenode -format
+start-dfs.sh
+start-yarn.sh
+
+hdfs dfs -mkdir -p /tmp
+hdfs dfs -mkdir -p /user/hive/warehouse
+hdfs dfs -chmod g+w /tmp
+hdfs dfs -chmod g+w /user/hive/warehouse
