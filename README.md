@@ -1,47 +1,66 @@
-# hadoop3_spark_312
+# hadoop3_spark312_hive239
 
-Docker for standalone and pseudo-distributed mode
+### Hadoop, Spark and Hive Docker standalone for local development
 
-# Build and run Hadoop Docker
+It will use a postgres instance for hive metastore, due more stability than Derby local.
 
-`docker build -t kennon/hadoop_331:hadoop_331 .`
+# Build Dockers
 
-`docker run -t -i -d -p 51070:50070 -p 4040:4040 -p 8088:8088  -p 7077:7077 -p 8080:8080 -p 18080:18080 -p 4140:4040 --name=hadoop_331 --hostname=master-node spark_312_hadoop331`
+### Must be executed in sequence
 
-`docker exec -it hadoop_331 /bin/bash`
+`docker build -t kennon/hadoop:hadoop_331 .`
 
-# Build sparl 312 on top of the previous hadoop 331 build.
+`docker build -f ./spark/Dockerfile . -t kennon/hadoop:spark_312`
 
-`docker build -f ./spark/Dockerfile . -t kennon/hadoop_331:spark_312`
+`docker build -f ./postgres-hms/Dockerfile . -t kennon/hadoop:postgres-hms`
 
-# Inside of docker container
+# Run 2 dockers, Hadoop-spark-hive and postgres.
 
-`hdfs namenode -format`
+### Haddop3 Network Create to integrate containers connection.
 
-`start-dfs.sh`
+`docker network create --subnet=172.20.0.0/16 hadoop2net`
 
-`start-yarn.sh`
+### Run the containers
 
-`hdfs dfs -mkdir -p /user/root`
-
-`start-all.sh` 
-
-`sleep 5`
+`docker run -d --net hadoop2net --ip 172.20.1.4 --hostname psqlhms --add-host master-node:172.20.1.1 --name psqlhms -e POSTGRES_PASSWORD=hive -it kennon/hadoop:postgres-hms`
 
 
-`schematool -initSchema -dbType derby`
+`docker run  -d --net hadoop2net --ip 172.20.1.1 --hostname master-node --add-host psqlhms:172.20.1.4 -p 50070:50070 -p 8088:8088  -p 7177:7077 -p 8180:8080 -p 18180:18080 -p 4040:4040 --name=master-node  -it kennon/hadoop:spark_312`
 
-`hive --service metastore`
 
-`hiveserver2`
+# Services Initialization in the masternode as hadoop user
 
-`beeline -u jdbc:hive2://master-node:10000`
+### format hadoop namenode - this will be executed oly one time.
 
-hdfs namenode -format
-start-dfs.sh
-start-yarn.sh
+`docker exec -u hadoop -it master-node hdfs namenode -format`
 
-hdfs dfs -mkdir -p /tmp
-hdfs dfs -mkdir -p /user/hive/warehouse
-hdfs dfs -chmod g+w /tmp
-hdfs dfs -chmod g+w /user/hive/warehouse
+PS: If you excute the namenode format command again it will erase hdfs.
+
+### Script to configure and start services
+
+`docker exec -u hadoop -it master-node bash /home/hadoop/script-init-services.sh`
+
+`docker exec -u hadoop -d master-node hive --service metastore`
+
+`docker exec -u hadoop -d master-node hive --service hiveserver2`
+
+# Entering in the master-node container and check if all services are running.
+
+`docker exec  -it master-node /bin/bash`
+
+Now check the services with jps
+
+`jps`
+
+$ jps
+576 SecondaryNameNode
+257 NameNode
+2193 RunJar
+3106 Jps
+2104 Worker
+1097 NodeManager
+2265 RunJar
+395 DataNode
+1996 Master
+
+## have fun with you Haddop environment for deverlopment and test.

@@ -110,6 +110,9 @@ RUN echo 'PS1="\[$(tput bold)\]\[\033[38;5;193m\]>>>\[$(tput sgr0)\]\[$(tput sgr
 
 ENV BOOTSTRAP /usr/local/bootstrap.sh
 RUN service ssh start
+ADD hadoop_config/script-init-services.sh /home/hadoop/script-init-services.sh
+RUN chown hadoop:hadoop /home/hadoop/script-init-services.sh
+RUN chmod +x /home/hadoop/script-init-services.sh
 RUN mkdir -p /hadoop/data/01
 RUN chmod 777 -R /hadoop/data/01*
 RUN chown hadoop -R /usr/local/hadoop

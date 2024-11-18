@@ -1,4 +1,4 @@
-FROM kennon/hadoop_331:hadoop_331 
+FROM kennon/hadoop:hadoop_331 
 LABEL version="Spark_312_standalone_with_hadoop"
 USER root
 
@@ -52,7 +52,7 @@ RUN mv /usr/local/hadoop/spark/conf/spark-env.sh.template /usr/local/hadoop/spar
     echo "spark.history.fs.logDirectory file:/usr/local/hadoop/spark/logs" >> /usr/local/hadoop/spark/conf/spark-defaults.conf && \
     echo "spark.master spark://master-node:7077" >> /usr/local/hadoop/spark/conf/spark-defaults.conf && \
     echo "spark.sql.catalogImplementation hive" >> /usr/local/hadoop/spark/conf/spark-defaults.conf && \
-    echo "spark.yarn.jars hdfs://master-node:9000/spark-jars/*" >> /usr/local/hadoop/spark/conf/spark-defaults.conf
+    echo "spark.yarn.jars hdfs://master-node:8020/spark-jars/*" >> /usr/local/hadoop/spark/conf/spark-defaults.conf
     #RUN echo "spark.sql.hive.metastore.version 2.3.0" >> /usr/local/hadoop/spark/conf/spark-defaults.conf && \
     #RUN echo "spark.sql.hive.metastore.jars $(hadoop classpath)" >> /usr/local/hadoop/spark/conf/spark-defaults.conf
 
@@ -86,7 +86,7 @@ RUN tar -xzf /usr/local/hadoop/apache-hive-$HIVE_VERSION-bin.tar.gz -C /usr/loca
 RUN mv /usr/local/hadoop/apache-hive-$HIVE_VERSION-bin /usr/local/hadoop/hive
 RUN rm -rf /usr/local/hadoop/apache-hive-$HIVE_VERSION*
 
-# set environment variables
+# set Hive environment variables
 ENV HIVE_HOME /usr/local/hadoop/hive
 ENV PATH $HIVE_HOME/bin:$PATH
 
