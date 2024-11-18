@@ -1,58 +1,133 @@
-# hadoop3_spark312_hive239
 
-### Hadoop, Spark and Hive Docker standalone for local development
+# Hadoop 3.3.1, Spark 3.1.2, Hive 2.3.9 Docker Environment
 
-It will use a postgres instance for hive metastore, due more stability than Derby local.
+### A standalone Docker setup for local development with Hadoop, Spark, and Hive.
 
-# Build Dockers
+This setup uses a PostgreSQL instance as the Hive Metastore for greater stability compared to the default Derby database.
 
-### Must be executed in sequence
+---
 
-`docker build -t kennon/hadoop:hadoop_331 .`
+## Table of Contents
 
-`docker build -f ./spark/Dockerfile . -t kennon/hadoop:spark_312`
+1. [Building Docker Images](#building-docker-images)
+2. [Running Containers](#running-containers)
+   - [Create a Docker Network](#step-1-create-a-docker-network)
+   - [Run Containers](#step-2-run-containers)
+3. [Initializing Services on `master-node`](#initializing-services-on-master-node)
+   - [Format the Hadoop Namenode](#step-1-format-the-hadoop-namenode)
+   - [Start Services](#step-2-start-services)
+4. [Verifying Services](#verifying-services)
+   - [Enter the `master-node` Container](#step-1-enter-the-master-node-container)
+   - [Check Running Services](#step-2-check-running-services-with-jps)
+5. [Notes](#notes)
+6. [Conclusion](#conclusion)
 
-`docker build -f ./postgres-hms/Dockerfile . -t kennon/hadoop:postgres-hms`
+---
 
-# Run 2 dockers, Hadoop-spark-hive and postgres.
+## Building Docker Images
 
-### Haddop3 Network Create to integrate containers connection.
+Follow the sequence below to build the Docker images:
 
-`docker network create --subnet=172.20.0.0/16 hadoop2net`
+1. **Build the Hadoop image:**
+   ```bash
+   docker build -t kennon/hadoop:hadoop_331 .
+   ```
 
-### Run the containers
+2. **Build the Spark image:**
+   ```bash
+   docker build -f ./spark/Dockerfile . -t kennon/hadoop:spark_312
+   ```
 
-`docker run -d --net hadoop2net --ip 172.20.1.4 --hostname psqlhms --add-host master-node:172.20.1.1 --name psqlhms -e POSTGRES_PASSWORD=hive -it kennon/hadoop:postgres-hms`
+3. **Build the PostgreSQL Hive Metastore image:**
+   ```bash
+   docker build -f ./postgres-hms/Dockerfile . -t kennon/hadoop:postgres-hms
+   ```
 
+---
 
-`docker run  -d --net hadoop2net --ip 172.20.1.1 --hostname master-node --add-host psqlhms:172.20.1.4 -p 50070:50070 -p 8088:8088  -p 7177:7077 -p 8180:8080 -p 18180:18080 -p 4040:4040 --name=master-node  -it kennon/hadoop:spark_312`
+## Running Containers
 
+### Step 1: Create a Docker Network
+To enable communication between containers, create a network:
+```bash
+docker network create --subnet=172.20.0.0/16 hadoop2net
+```
 
-# Services Initialization in the masternode as hadoop user
+### Step 2: Run Containers
+1. **Start the PostgreSQL Hive Metastore container:**
+   ```bash
+   docker run -d \
+     --net hadoop2net \
+     --ip 172.20.1.4 \
+     --hostname psqlhms \
+     --add-host master-node:172.20.1.1 \
+     --name psqlhms \
+     -e POSTGRES_PASSWORD=hive \
+     -it kennon/hadoop:postgres-hms
+   ```
 
-### format hadoop namenode - this will be executed oly one time.
+2. **Start the Hadoop-Spark-Hive container:**
+   ```bash
+   docker run -d \
+     --net hadoop2net \
+     --ip 172.20.1.1 \
+     --hostname master-node \
+     --add-host psqlhms:172.20.1.4 \
+     -p 50070:50070 \
+     -p 8088:8088 \
+     -p 7177:7077 \
+     -p 8180:8080 \
+     -p 18180:18080 \
+     -p 4040:4040 \
+     --name=master-node \
+     -it kennon/hadoop:spark_312
+   ```
 
-`docker exec -u hadoop -it master-node hdfs namenode -format`
+---
 
-PS: If you excute the namenode format command again it will erase hdfs.
+## Initializing Services on `master-node`
 
-### Script to configure and start services
+### Step 1: Format the Hadoop Namenode
+**Note:** This step needs to be executed only once. Running it again will erase the HDFS data.
+```bash
+docker exec -u hadoop -it master-node hdfs namenode -format
+```
 
-`docker exec -u hadoop -it master-node bash /home/hadoop/script-init-services.sh`
+### Step 2: Start Services
+Run the following commands to configure and start Hadoop, Spark, and Hive services:
 
-`docker exec -u hadoop -d master-node hive --service metastore`
+1. **Initialize services:**
+   ```bash
+   docker exec -u hadoop -it master-node bash /home/hadoop/script-init-services.sh
+   ```
 
-`docker exec -u hadoop -d master-node hive --service hiveserver2`
+2. **Start the Hive Metastore service:**
+   ```bash
+   docker exec -u hadoop -d master-node hive --service metastore
+   ```
 
-# Entering in the master-node container and check if all services are running.
+3. **Start the HiveServer2 service:**
+   ```bash
+   docker exec -u hadoop -d master-node hive --service hiveserver2
+   ```
 
-`docker exec  -it master-node /bin/bash`
+---
 
-Now check the services with jps
+## Verifying Services
 
-`jps`
+### Step 1: Enter the `master-node` container:
+```bash
+docker exec -it master-node /bin/bash
+```
 
-$ jps
+### Step 2: Check running services with `jps`:
+Run the `jps` command to confirm all services are active:
+```bash
+jps
+```
+
+Sample output:
+```
 576 SecondaryNameNode
 257 NameNode
 2193 RunJar
@@ -62,5 +137,19 @@ $ jps
 2265 RunJar
 395 DataNode
 1996 Master
+```
 
-## have fun with you Haddop environment for deverlopment and test.
+---
+
+## Notes
+
+- **Network and IPs:** Ensure that the IP addresses (`172.20.x.x`) are not already in use. Adjust as necessary for your local environment.
+- **PostgreSQL Password:** The default password for the PostgreSQL Hive Metastore is set to `hive`. You can modify this in the `docker run` command as needed.
+
+---
+
+## Conclusion
+
+Enjoy your Hadoop environment for development and testing. If you encounter any issues, revisit the steps or consult the logs for troubleshooting.
+
+Happy coding! 🚀
