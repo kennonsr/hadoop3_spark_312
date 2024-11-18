@@ -1,0 +1,47 @@
+version: '3.9'
+
+networks:
+  hadoop3net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16
+
+services:
+  psqlhms:
+    image: kennon/hadoop:postgres-hms
+    container_name: psqlhms
+    hostname: psqlhms
+    networks:
+      hadoop3net:
+        ipv4_address: 172.30.1.4
+    environment:
+      - POSTGRES_PASSWORD=hive
+    extra_hosts:
+      - master-node:172.30.1.1
+    restart: always
+
+  master-node:
+    image: kennon/hadoop:spark_312
+    container_name: master-node
+    hostname: master-node
+    networks:
+      hadoop3net:
+        ipv4_address: 172.30.1.1
+    ports:
+      - "51070:50070"
+      - "8188:8088"
+      - "7177:7077"
+      - "8180:8080"
+      - "18180:18080"
+      - "4040:4040"
+    extra_hosts:
+      - psqlhms:172.30.1.4
+    depends_on:
+      - psqlhms
+    expose:
+      - "22"
+    # command: ["/usr/local/bootstrap.sh", "-d"]
+    tty: true
+    stdin_open: true
+    restart: always
