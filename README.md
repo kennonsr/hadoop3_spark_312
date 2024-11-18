@@ -28,9 +28,18 @@ This setup uses a PostgreSQL instance as the Hive Metastore for greater stabilit
 
 Follow the sequence below to build the Docker images:
 
-1. **Build the Hadoop image:**
+1. **Build the Hadoop image - x86/AMD64 or ARM (Apple M-series and Raspberry):**  
+    Please, in this first step only execute one of the commands that is related to your hardware/processor, generally Windows machines uses AMD / Intel / x86.
+
+   `AMD64 / INTEL64 Processors`
    ```bash
    docker build -t kennon/hadoop:hadoop_331 .
+   ```
+   or
+
+   `ARM Processors - Apple M1, M2, M3`
+   ```bash
+   docker build -f ./hadoop_arm64/Dockerfile .-t kennon/hadoop:hadoop_331 .
    ```
 
 2. **Build the Spark image:**
@@ -145,6 +154,7 @@ Sample output:
 
 - **Network and IPs:** Ensure that the IP addresses (`172.20.x.x`) are not already in use. Adjust as necessary for your local environment.
 - **PostgreSQL Password:** The default password for the PostgreSQL Hive Metastore is set to `hive`. You can modify this in the `docker run` command as needed.
+- **Test Script:** Inside of the folder [test_script](./test_script/) you find instructions to test reading [cluster_simple_test.md](./test_script/cluster_simple_test.md) .
 
 ---
 
