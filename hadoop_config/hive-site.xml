@@ -3,7 +3,7 @@
 <configuration>
   <property>
     <name>javax.jdo.option.ConnectionURL</name>
-    <value>jdbc:postgresql://master-node:5432/metastore</value>
+    <value>jdbc:postgresql://psqlhms:5432/metastore</value>
     <description>JDBC connect string for a JDBC metastore</description>
   </property>
   <property>

@@ -45,7 +45,7 @@
   </property>
   <property>
     <name>hbase.rootdir</name>
-    <value>hdfs://master-node:9000/hbase</value>
+    <value>hdfs://master-node:8020/hbase</value>
   </property>
   <property>
     <name>hbase.zookeeper.property.clientPort</name>
