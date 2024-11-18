@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.9'
 
 networks:
   hadoop3net:
@@ -29,8 +29,8 @@ services:
       hadoop3net:
         ipv4_address: 172.30.1.1
     ports:
-      - "50070:50070"
-      - "8088:8088"
+      - "51070:50070"
+      - "8188:8088"
       - "7177:7077"
       - "8180:8080"
       - "18180:18080"
@@ -39,5 +39,9 @@ services:
       - psqlhms:172.30.1.4
     depends_on:
       - psqlhms
-    privileged: "true"
+    expose:
+      - "22"
+    # command: ["/usr/local/bootstrap.sh", "-d"]
+    tty: true
+    stdin_open: true
     restart: always
