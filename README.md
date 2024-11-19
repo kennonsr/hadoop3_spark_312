@@ -97,7 +97,7 @@ docker network create --subnet=172.20.0.0/16 hadoop2net
 ## Option 2: Using docker compose
 
 ### DOCKER COMPOSE Step
-1. **Start containers vis docker-compose:**
+1. **Start containers via docker-compose:**
 ```bash
 docker-compose up -d
 ```
