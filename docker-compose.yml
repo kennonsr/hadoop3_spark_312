@@ -41,7 +41,7 @@ services:
       - psqlhms
     expose:
       - "22"
-    # command: ["/usr/local/bootstrap.sh", "-d"]
+    command: ["/usr/local/bootstrap.sh", "-d"]
     tty: true
     stdin_open: true
     restart: always
