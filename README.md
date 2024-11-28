@@ -39,25 +39,22 @@ Follow the sequence below to build the Docker images:
 
    `ARM Processors - Apple M1, M2, M3`
    ```bash
-   docker build -f ./hadoop_arm64/Dockerfile -t kennon/hadoop:hadoop_331 .
+   docker build -f ./hadoop_arm64/Dockerfile . -t kennon/hadoop:hadoop_331 .
    ```
 
 2. **Build the Spark image:**
    ```bash
-   docker build -f ./spark/Dockerfile -t kennon/hadoop:spark_312 .
+   docker build -f ./spark/Dockerfile . -t kennon/hadoop:spark_312
    ```
 
 3. **Build the PostgreSQL Hive Metastore image:**
    ```bash
-   docker build -f ./postgres-hms/Dockerfile -t kennon/hadoop:postgres-hms .
+   docker build -f ./postgres-hms/Dockerfile . -t kennon/hadoop:postgres-hms
    ```
 
 ---
 
-## Running Containers you have 2 options, individual steps or via docker compose:
-
----
-## Option 1: Running the following steps individually
+## Running Containers
 
 ### Step 1: Create a Docker Network
 To enable communication between containers, create a network:
@@ -94,13 +91,7 @@ docker network create --subnet=172.20.0.0/16 hadoop2net
      --name=master-node \
      -it kennon/hadoop:spark_312
    ```
-## Option 2: Using docker compose
 
-### DOCKER COMPOSE Step
-1. **Start containers via docker-compose:**
-```bash
-docker-compose up -d
-```
 ---
 
 ## Initializing Services on `master-node`
