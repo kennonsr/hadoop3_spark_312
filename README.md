@@ -39,17 +39,17 @@ Follow the sequence below to build the Docker images:
 
    `ARM Processors - Apple M1, M2, M3`
    ```bash
-   docker build -f ./hadoop_arm64/Dockerfile . -t kennon/hadoop:hadoop_331 .
+   docker build -f ./hadoop_arm64/Dockerfile -t kennon/hadoop:hadoop_331 .
    ```
 
 2. **Build the Spark image:**
    ```bash
-   docker build -f ./spark/Dockerfile . -t kennon/hadoop:spark_312
+   docker build -f ./spark/Dockerfile -t kennon/hadoop:spark_312 .
    ```
 
 3. **Build the PostgreSQL Hive Metastore image:**
    ```bash
-   docker build -f ./postgres-hms/Dockerfile . -t kennon/hadoop:postgres-hms
+   docker build -f ./postgres-hms/Dockerfile -t kennon/hadoop:postgres-hms .
    ```
 
 ---
