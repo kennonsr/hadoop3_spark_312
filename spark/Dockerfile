@@ -106,3 +106,10 @@ COPY hadoop_config/spark-entrypoint.sh /usr/local/bin/spark-entrypoint.sh
 # RUN chmod +x /usr/local/bin/spark-entrypoint.sh
 
 # ENTRYPOINT ["/usr/local/bin/spark-entrypoint.sh"]
+
+# ADDITIONS
+ADD main.py .
+RUN pip install pyspark
+# RUN ["python3.10", "./main.py"]
+
+# VERSION NEEDS TO BE 3.10 TO REFERENCE SAME PYTHON
