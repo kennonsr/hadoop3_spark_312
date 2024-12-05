@@ -84,7 +84,7 @@ df_loaded = spark.sql('SELECT * FROM personal_data')
 ls_dict = df_loaded.toPandas().to_dict('records')
 
 # Save JSON
-with open('/tmp/personal_data_y', 'w') as jsf:
+with open('/tmp/personal_data_y.json', 'w') as jsf:
     jsf.write("[\n")
     for idx, record in enumerate(ls_dict):
         jsf.write(json.dumps(record))  # Write each record as JSON
