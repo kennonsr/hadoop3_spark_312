@@ -21,6 +21,6 @@ df = spark.sql("SELECT driverid, name, SUM(hours) AS total_hours, sum(MILES) AS 
                GROUP BY driverid, name \
                ORDER BY driverid")
 df.show() 
-df.coalesce(1).write.options(multiLine=True, lineSep = '\n').csv("/tmp/meet5")
+df.coalesce(1).write.options(lineSep = '\n', header = True).csv("/tmp/meet6")
 
 # id, name, SUM(hours), SUM(miles)
