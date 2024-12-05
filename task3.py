@@ -63,7 +63,7 @@ while count < numberOfEntries:
         address_country     = fake.current_country()
         address_zipcode     = fake.zipcode()
     except Exception as e:
-        print('FF')
+        print(f'Could not return all personal information. Exception: {e}')
         continue
     # UPDATES
     count += 1                  # placekeeping
