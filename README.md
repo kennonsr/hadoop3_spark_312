@@ -33,13 +33,13 @@ Follow the sequence below to build the Docker images:
 
    `AMD64 / INTEL64 Processors`
    ```bash
-   docker build -t kennon/hadoop:hadoop_331 .
+   docker build -t kennon/hadoop:hadoop_334 .
    ```
    or
 
    `ARM Processors - Apple M1, M2, M3`
    ```bash
-   docker build -f ./hadoop_arm64/Dockerfile -t kennon/hadoop:hadoop_331 .
+   docker build -f ./hadoop_arm64/Dockerfile -t kennon/hadoop:hadoop_334 .
    ```
 
 2. **Build the Spark image:**

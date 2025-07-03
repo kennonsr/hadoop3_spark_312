@@ -1,11 +1,11 @@
-#Build a pseudo distributed and standalone Hadoop version 3.3.1
+#Build a pseudo distributed and standalone Hadoop version 3.3.4
 
 FROM ubuntu:20.04
 
 # MAINTAINER Kennon 
-LABEL version="hadoop_331_standalone"
+LABEL version="hadoop_334_standalone"
 # Hadoop Version
-ENV HADOOP_VERSION 3.3.1
+ENV HADOOP_VERSION 3.3.4
 
 USER root
 
@@ -114,6 +114,8 @@ ADD hadoop_config/script-init-services.sh /home/hadoop/script-init-services.sh
 RUN chown hadoop:hadoop /home/hadoop/script-init-services.sh
 RUN chmod +x /home/hadoop/script-init-services.sh
 RUN mkdir -p /hadoop/data/01
+RUN mkdir -p /usr/local/hadoop/logs
+RUN chown hadoop:hadoop -R /usr/local/hadoop/logs
 RUN chmod 777 -R /hadoop/data/01*
 RUN chown hadoop -R /usr/local/hadoop
 #

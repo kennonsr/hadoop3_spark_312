@@ -1,8 +1,8 @@
-FROM kennon/hadoop:hadoop_331 
+FROM kennon/hadoop:hadoop_334
 LABEL version="Spark_312_standalone_with_hadoop"
 USER root
 
-# installing python 3.11 for Pyspark
+# installing python 3.10 for Pyspark
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive add-apt-repository --yes ppa:deadsnakes/ppa && \
@@ -74,9 +74,9 @@ SPARK_WORKER_WEBUI_PORT=8080 \
 SPARK_WORKER_PORT=7000 \
 SPARK_WORKLOAD="master"
 
-# Hive 2.3.9 Intallation
+# Hive 2.3.10 Intallation
 
-ENV HIVE_VERSION 2.3.9
+ENV HIVE_VERSION 2.3.10
 
 # get sources
 RUN apt-get update
