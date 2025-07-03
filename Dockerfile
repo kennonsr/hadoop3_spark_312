@@ -5,7 +5,7 @@ FROM ubuntu:20.04
 # MAINTAINER Kennon 
 LABEL version="hadoop_334_standalone"
 # Hadoop Version
-ENV HADOOP_VERSION 3.3.4
+ENV HADOOP_VERSION=3.3.4
 
 USER root
 
@@ -33,7 +33,7 @@ RUN \
   rm -rf /var/lib/apt/lists/* && \
   Javadir=$(dirname $(dirname $(readlink -f $(which javac)))) && \
   java -version
-ENV JAVA_HOME $Javadir
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 # Add hadoop, hdfs, and yarn users, set up SSH passwordless login, and configure SSH
 RUN useradd -m -s /bin/bash hadoop && \
@@ -64,14 +64,14 @@ RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-$HADOOP_VERSION/hado
     systemctl enable ssh
 
 # HADOOP ENV setup
-ENV HADOOP_HOME /usr/local/hadoop
-ENV HADOOP_CONF_DIR $HADOOP_HOME/etc/hadoop
-ENV HADOOP_MAPRED_HOME $HADOOP_HOME
-ENV HADOOP_COMMON_HOME $HADOOP_HOME
-ENV HADOOP_HDFS_HOME $HADOOP_HOME
-ENV HADOOP_COMMON_LIB_NATIVE_DIR $HADOOP_HOME/share/hadoop/common/lib
-ENV YARN_HOME $HADOOP_HOME
-ENV PATH $JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
+ENV HADOOP_HOME=/usr/local/hadoop
+ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+ENV HADOOP_MAPRED_HOME=$HADOOP_HOME
+ENV HADOOP_COMMON_HOME=$HADOOP_HOME
+ENV HADOOP_HDFS_HOME=$HADOOP_HOME
+ENV HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/share/hadoop/common/lib
+ENV YARN_HOME=$HADOOP_HOME
+ENV PATH=$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
 
 # hadoop-env.sh and profile settings
 RUN echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
@@ -108,7 +108,7 @@ RUN echo 'PS1="\[$(tput bold)\]\[\033[38;5;193m\]>>>\[$(tput sgr0)\]\[$(tput sgr
     echo 'PS1="\[$(tput bold)\]\[\033[38;5;193m\]>>>\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\] \[$(tput sgr0)\]\[\033[38;5;192m\]\u\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;253m\]@\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;117m\]\H\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;253m\]:[\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;223m\]\w\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;253m\]]:[\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;192m\]\T\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;253m\]]\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\] \[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;253m\]{\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;208m\]\$?\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;253m\]}\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\] \[$(tput sgr0)\]\[\033[38;5;193m\]>>>\[$(tput sgr0)\]\[\033[38;5;15m\]\n\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;9m\]\\$\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\] \[$(tput sgr0)\]"' >> ~/.bashrc
 
 
-ENV BOOTSTRAP /usr/local/bootstrap.sh
+ENV BOOTSTRAP=/usr/local/bootstrap.sh
 RUN service ssh start
 ADD hadoop_config/script-init-services.sh /home/hadoop/script-init-services.sh
 RUN chown hadoop:hadoop /home/hadoop/script-init-services.sh

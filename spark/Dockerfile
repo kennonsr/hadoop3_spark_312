@@ -9,8 +9,8 @@ RUN apt-get update && \
     apt-get install -y python3.10 python3.10-distutils
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
 
-ENV SCALA_VERSION 2.12.12
-ENV SPARK_VERSION 3.1.2
+ENV SCALA_VERSION=2.12.12
+ENV SPARK_VERSION=3.1.2
 
 # get sources
 
@@ -33,14 +33,15 @@ RUN mkdir -p /usr/local/hadoop/spark/logs
 RUN chown hadoop -R /usr/local/hadoop/spark/logs
 
 # set environment variables
-ENV SCALA_HOME /usr/share/scala
-ENV SPARK_HOME /usr/local/hadoop/spark
-ENV SPARK_LOG_DIR /usr/local/hadoop/spark/logs
-ENV HADOOP_HOME /usr/local/hadoop
-ENV SPARK_DIST_CLASSPATH $(hadoop classpath)
-ENV PATH $SPARK_HOME/bin:$SPARK_HOME/sbin:$PATH
-ENV PATH $SCALA_HOME/bin:$PATH
-ENV LD_LIBRARY_PATH /usr/local/hadoop/hadoop/share/hadoop/common/lib:$LD_LIBRARY_PATH
+ENV SCALA_HOME=/usr/share/scala
+ENV SPARK_HOME=/usr/local/hadoop/spark
+ENV SPARK_LOG_DIR=/usr/local/hadoop/spark/logs
+ENV HADOOP_HOME=/usr/local/hadoop
+ENV SPARK_DIST_CLASSPATH="$(hadoop classpath)"
+ENV PATH=$SPARK_HOME/bin:$SPARK_HOME/sbin:$PATH
+ENV PATH=$SCALA_HOME/bin:$PATH
+# ENV LD_LIBRARY_PATH=/usr/local/hadoop/share/hadoop/common/lib:${LD_LIBRARY_PATH:-}
+ENV LD_LIBRARY_PATH=/usr/local/hadoop/share/hadoop/common
 
 # Configure Spark environment
 RUN mv /usr/local/hadoop/spark/conf/spark-env.sh.template /usr/local/hadoop/spark/conf/spark-env.sh && \
@@ -76,7 +77,7 @@ SPARK_WORKLOAD="master"
 
 # Hive 2.3.10 Intallation
 
-ENV HIVE_VERSION 2.3.10
+ENV HIVE_VERSION=2.3.10
 
 # get sources
 RUN apt-get update
@@ -87,8 +88,8 @@ RUN mv /usr/local/hadoop/apache-hive-$HIVE_VERSION-bin /usr/local/hadoop/hive
 RUN rm -rf /usr/local/hadoop/apache-hive-$HIVE_VERSION*
 
 # set Hive environment variables
-ENV HIVE_HOME /usr/local/hadoop/hive
-ENV PATH $HIVE_HOME/bin:$PATH
+ENV HIVE_HOME=/usr/local/hadoop/hive
+ENV PATH=$HIVE_HOME/bin:$PATH
 
 RUN cp /usr/share/java/postgresql-jdbc4.jar /usr/local/hadoop/hive/lib/
 ADD hadoop_config/hive-site.xml $HIVE_HOME/conf/hive-site.xml
@@ -97,7 +98,7 @@ RUN mkdir -p $HIVE_HOME/hcatalog/var/log
 RUN mkdir -p $HIVE_HOME/var/log
 RUN chown hadoop -R /usr/local/hadoop/hive
 RUN export LANGUAGE=en_US.UTF-8
-ENV HIVE_CONF_DIR $HIVE_HOME/conf
+ENV HIVE_CONF_DIR=$HIVE_HOME/conf
 
 EXPOSE 8080 7077 9000 6066 4040 18080 8042 10000
 
