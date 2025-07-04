@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!-- Minimal Hadoop Core Configuration for Hive -->
+<configuration>
+  <!-- DEFAULT: Local Filesystem Configuration -->
+  <property>
+    <name>fs.defaultFS</name>
+    <value>file:///</value>
+    <description>Default filesystem - local for simple setup</description>
+  </property>
+
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>/tmp/hadoop</value>
+    <description>Local temporary directory</description>
+  </property>
+
+  <!-- Essential proxy user configurations for Hive -->
+  <property>
+    <name>hadoop.proxyuser.hive.groups</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hive.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hadoop.groups</name>
+    <value>*</value>    
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hadoop.hosts</name>
+    <value>*</value>
+  </property>
+
+  <!-- AZURE DATA LAKE STORAGE GEN2 CONFIGURATION (Uncomment to use) -->
+  <!--
+  <property>
+    <name>fs.azure.account.auth.type.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>OAuth</value>
+    <description>Authentication type for Azure ADLS Gen2</description>
+  </property>
+
+  <property>
+    <name>fs.azure.account.oauth.provider.type.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider</value>
+    <description>OAuth provider for Azure ADLS Gen2</description>
+  </property>
+
+  <property>
+    <name>fs.azure.account.oauth2.client.id.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>YOUR_CLIENT_ID</value>
+    <description>Azure AD Application Client ID</description>
+  </property>
+
+  <property>
+    <name>fs.azure.account.oauth2.client.secret.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>YOUR_CLIENT_SECRET</value>
+    <description>Azure AD Application Client Secret</description>
+  </property>
+
+  <property>
+    <name>fs.azure.account.oauth2.client.endpoint.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>https://login.microsoftonline.com/YOUR_TENANT_ID/oauth2/token</value>
+    <description>Azure AD OAuth2 endpoint</description>
+  </property>
+  -->
+
+  <!-- ALTERNATIVE: Azure ADLS with Managed Identity (Uncomment to use) -->
+  <!--
+  <property>
+    <name>fs.azure.account.auth.type.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>OAuth</value>
+  </property>
+
+  <property>
+    <name>fs.azure.account.oauth.provider.type.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>org.apache.hadoop.fs.azurebfs.oauth2.MsiTokenProvider</value>
+    <description>Use Managed Service Identity for authentication</description>
+  </property>
+  -->
+
+  <!-- ALTERNATIVE: Azure ADLS with Environment Variables (Recommended for Docker) -->
+  <!--
+  <property>
+    <name>fs.azure.account.auth.type.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>OAuth</value>
+  </property>
+
+  <property>
+    <name>fs.azure.account.oauth.provider.type.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider</value>
+  </property>
+
+  <property>
+    <name>fs.azure.account.oauth2.client.id.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>${env.AZURE_CLIENT_ID}</value>
+    <description>Azure AD Application Client ID from environment variable</description>
+  </property>
+
+  <property>
+    <name>fs.azure.account.oauth2.client.secret.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>${env.AZURE_CLIENT_SECRET}</value>
+    <description>Azure AD Application Client Secret from environment variable</description>
+  </property>
+
+  <property>
+    <name>fs.azure.account.oauth2.client.endpoint.STORAGEACCOUNT.dfs.core.windows.net</name>
+    <value>https://login.microsoftonline.com/${env.AZURE_TENANT_ID}/oauth2/token</value>
+    <description>Azure AD OAuth2 endpoint with tenant from environment variable</description>
+  </property>
+  -->
+
+  <!-- Performance Settings -->
+  <property>
+    <name>fs.file.impl</name>
+    <value>org.apache.hadoop.fs.LocalFileSystem</value>
+    <description>Local filesystem implementation</description>
+  </property>
+
+  <property>
+    <name>fs.hdfs.impl</name>
+    <value>org.apache.hadoop.hdfs.DistributedFileSystem</value>
+    <description>HDFS implementation (not used in minimal setup)</description>
+  </property>
+</configuration>

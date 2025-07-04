@@ -1,0 +1,79 @@
+version: '3.8'
+
+networks:
+  hive-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16
+
+services:
+  psqlhms:
+    image: kennon/hadoop:postgres-hms
+    container_name: psqlhms
+    hostname: psqlhms
+    networks:
+      hive-net:
+        ipv4_address: 172.30.1.4
+    environment:
+      - POSTGRES_PASSWORD=hive
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  # Optional: expose for external access
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  hive-server:
+    image: kennon/hadoop:hive-minimal
+    container_name: hive-server
+    hostname: hive-server
+    networks:
+      hive-net:
+        ipv4_address: 172.30.1.2
+    ports:
+      - "10000:10000"  # HiveServer2 (Beeline connections)
+      - "9083:9083"    # Metastore Service
+    volumes:
+      - hive_warehouse:/opt/hive/warehouse
+      - hive_logs:/opt/hive/logs
+      - ./hadoop_config/hive-site-minimal.xml:/opt/hive/conf/hive-site.xml:ro
+      - ./hadoop_config/core-site-minimal.xml:/opt/hadoop/etc/hadoop/core-site.xml:ro
+    environment:
+      - HIVE_HOME=/opt/hive
+      - HADOOP_HOME=/opt/hadoop
+      - JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+      # Azure ADLS Environment Variables (uncomment and set when using Azure)
+      # - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      # - AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
+      # - AZURE_TENANT_ID=${AZURE_TENANT_ID}
+    depends_on:
+      psqlhms:
+        condition: service_healthy
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -tlnp | grep :10000 || ss -tlnp | grep :10000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  postgres_data:
+    driver: local
+  hive_warehouse:
+    driver: local
+  hive_logs:
+    driver: local
+
+# Optional: Azure ADLS volume configuration (uncomment when using Azure)
+# volumes:
+#   postgres_data:
+#     driver: local
+#   hive_logs:
+#     driver: local
+#   # No hive_warehouse volume needed when using Azure ADLS
